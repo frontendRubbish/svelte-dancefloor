@@ -1,0 +1,128 @@
+<div class="dancefloor { dancing ? 'dancefloor--dark' : ''}">
+  <Dj {tick} {beat} {dancing} {jumping} {riot} on:startJump="set({jumping:true})" on:stopJump="set({jumping:false})" />
+  <StartButton {dancing} on:startSong="set({dancing:true, speed: 4.4, jumping: false, riot: false})" on:startRiot="set({dancing:true, jumping:true, riot:true, speed: 40})" />
+  {#each danceRows as row, rowIndex}
+    {#each row as dancer, index}
+      <Dancer {tick} {beat} {jumping} bottomPos="{dancer.bottomPos}" leftPos="{dancer.leftPos}"/>
+    {/each}
+  {/each}
+  <Spot {beat} {dancing} position="left" distance="60"/>
+  <Spot {beat} {dancing} position="left" distance="340"/>
+  <Spot {beat} {dancing} position="right" distance="60"/>
+  <Spot {beat} {dancing} position="right" distance="340"/>
+</div>
+
+<style type='text/scss'>
+  .dancefloor {
+    background-color: rgba(230, 230, 230, 1);
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    transition: background-color 1.2s;
+    width: 100%;
+
+    &--dark {
+      background-color: rgba(0,0,0,1);
+    }
+  }
+</style>
+
+<script>
+  import Dancer from './Dancer.html';
+  import Dj from './Dj.html';
+  import Spot from './Spot.html';
+  import StartButton from './StartButton.html';
+
+  export default {
+    oncreate() {
+      const component = this,
+            fpsInterval = 1000/60;
+
+      let   beatThen = Date.now(),
+            beatLoop = () => {
+              requestAnimationFrame(beatLoop);
+              let now = Date.now(),
+                  delta = now - beatThen,
+                  {beatInterval} = component.get();
+
+              if (delta > beatInterval) {
+                let {dancing, beat} = component.get();
+                beatThen = now - (delta % beatInterval);
+
+                if ( dancing ) {
+                  component.set({
+                    beat: !beat
+                  });
+                }
+             }
+            },
+
+            then = Date.now(),
+            animationLoop = () => {
+             requestAnimationFrame(animationLoop);
+             let now = Date.now(),
+                 delta = now - then;
+
+             if (delta > fpsInterval) {
+               let {dancing, tick} = component.get();
+                then = now - (delta % fpsInterval);
+                if ( dancing ) {
+                  component.set({
+                    tick: !tick
+                  });
+                }
+             }
+           };
+      component.createDancers();
+
+      //Start Loops for Bunnies
+      animationLoop();
+      beatLoop();
+    },
+
+    data() {
+      return {
+        speed: 4.4,
+        dancing: false,
+        jumping: false,
+        tick: false,
+        beat: false,
+        riot: false,
+    		danceRows: []
+      };
+    },
+    computed: {
+      beatInterval: ({speed}) => 1000/speed
+    },
+    methods: {
+      createDancers() {
+        let dancerInRow = window.innerWidth / 100,
+            rowArray = [];
+        for (let rowIdx= 0;rowIdx < 3;rowIdx++) {
+          let row = [];
+          for (let idx = 0;idx < dancerInRow;idx++) {
+            row.push( {
+                leftPos : (idx * 86 ) + Math.floor(Math.random() * (30 + 0) - 0 ),
+                bottomPos: ( (3 - rowIdx ) * 70 ) + Math.floor(Math.random() * (10 + 10) ) - 60
+            });
+          }
+          rowArray.push(row);
+        }
+
+        this.set({danceRows: rowArray });
+
+      },
+      stopDancing() {
+        const component = this;
+
+        component.set({ dancing: false});
+      }
+    },
+    components: {
+      Dancer,
+      Dj,
+      Spot,
+      StartButton
+    }
+  };
+</script>

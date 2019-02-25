@@ -1,0 +1,77 @@
+<div class="spot {(dancing) ? '' : 'spot--hidden'}" style="{ (position == 'left' ) ? 'left:' : 'right:'}{distance}px">
+  <svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:ev="http://www.w3.org/2001/xml-events"
+     height="100%"
+     preserveAspectRatio="none"
+     viewbox="0 0 400 100"
+     width="100%">
+     <polygon fill="{spotColor}" height="100%" width="100%" points="20,0 {spotLeft},100 {spotRight},100"/>
+  </svg>
+</div>
+
+<style type='text/scss'>
+  .spot {
+    bottom: 30px;
+    position:fixed;
+    top: -30px;
+
+    &--hidden {
+      display: none;
+    }
+  }
+
+</style>
+
+<script>
+  export default {
+    onupdate({ changed, current, previous }) {
+      const component = this;
+      // this fires before oncreate, and on every state change.
+      // the first time it runs, `previous` is undefined
+      if(changed.beat) {
+        component.changeStyle();
+      }
+    },
+
+    data() {
+      return {
+          beatCount: 0,
+          spotColor: 'rgba( 0, 255, 0, 0.4)',
+          spotLeft: 0,
+          spotRight: 160,
+          colorValues: ['rgba( 255, 0, 0, 0.4)', 'rgba( 0, 0, 255, 0.4)']
+      };
+    },
+    methods: {
+      changeStyle() {
+        const component = this;
+
+        let {beatCount, colorValues, spotColor } = component.get(),
+            oldValue = spotColor,
+            nextIndex = Math.floor( Math.random() * (colorValues.length ) ),
+            newValue = colorValues[nextIndex],
+            newPosition = 20 + Math.floor(Math.random() * 200 );
+
+        beatCount++;
+
+        if ( beatCount == 2 ) {
+          colorValues.splice( nextIndex, 1);
+          colorValues.push(oldValue);
+
+          component.set({
+            beatCount: 0,
+            colorValues: colorValues,
+            spotColor: newValue,
+            spotLeft: newPosition,
+            spotRight: newPosition + 240
+          });
+        } else {
+          component.set({
+            beatCount: beatCount
+          });
+        }
+      }
+    }
+  };
+</script>
