@@ -1,36 +1,22 @@
 {
-  "name": "svelte-dancefloor",
-  "version": "1.0.0",
-  "description": "svelte test",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/frontendRubbish/svelte-dancefloor.git"
-  },
-  "keywords": [
-    "svelte",
-    "test",
-    "svg",
-    "html audio",
-    "vanilla js"
-  ],
-  "license": "MIT",
-  "main": "main.js",
+  "name": "dancefloor",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "webpack --watch --mode=development",
-    "build": "webpack --mode=production"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@babel/core": "^7.3.4",
-    "@babel/preset-env": "^7.3.4",
-    "babel-loader": "^8.0.5",
-    "css-loader": "^2.1.0",
-    "mini-css-extract-plugin": "^0.5.0",
-    "node-sass": "^4.11.0",
-    "sass-loader": "^7.1.0",
-    "style-loader": "^0.23.1",
-    "svelte": "^2.16.1",
-    "svelte-loader": "^2.13.3",
-    "webpack": "^4.29.5",
-    "webpack-cli": "^3.2.3"
+    "@sveltejs/vite-plugin-svelte": "^2.4.2",
+    "@tsconfig/svelte": "^5.0.0",
+    "sass": "^1.66.1",
+    "svelte": "^4.0.5",
+    "svelte-check": "^3.4.6",
+    "tslib": "^2.6.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
   }
 }
